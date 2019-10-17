@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<a href='/' style="color:#dfa25d ">Back to Home</a>
+<div class="container">
+<div class='row'>
+    <div class='container' >
+        <h1>{{ patient.name }}</h1>
+       
+        <h3>DOB: {{ patient.dob }}</h3>
+        <h3>Sex: {{ patient.sex }}</h3>
+        
+        
+    </div>
+
+    <p>
+            <form action='/patients/{{patient._id}}/edit'>
+              <input type='hidden' name='_method' value='EDIT'>
+              <button class='btn btn-primary' type='submit'>EDIT</button>
+            </form>
+          </p>
+
+
+    <p>
+            <form method='POST' action='/patients/{{patient._id}}/delete'>
+              <input type='hidden' name='_method' value='DELETE'>
+              <button class='btn btn-primary' type='submit'>DELETE</button>
+            </form>
+          </p>
+</div>
+
+<hr>  
+{% include 'partials/files_form.html'%}
+</div>
+
+  {% endblock %}

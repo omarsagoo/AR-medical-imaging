@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class='row'>
+    <div class='col-sm-6 col-sm-offset-3'>
+        <form method='POST' action='/patients'>
+            {% include 'partials/patient_form.html' %}
+            <!-- BUTTON -->
+            <div class='form-group'>
+                <button class='btn btn-primary' type='submit'>Save Patient</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

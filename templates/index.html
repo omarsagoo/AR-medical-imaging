@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% for patient in patients %}
+
+<a href="/patients/{{ patient._id }}" class="card-link">
+    <div class="card" style="width: 100%;">
+      <div class="card-body">
+          <h2 class="card-title">{{ patient.name }}</h2>
+          <h3 class="card-subtitle mb-2 text-muted">Tag: {{ patient.dob }}</h3>
+          <a href="/patients/<patient_id>" class="card-link">Card link</a>
+          
+      </div>
+  </div>
+  </a>
+
+{% endfor %}
+
+
+
+{% endblock %}
