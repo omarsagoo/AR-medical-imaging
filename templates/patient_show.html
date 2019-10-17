@@ -30,6 +30,15 @@
 
 <hr>  
 {% include 'partials/files_form.html'%}
+
+{% for medfile in patient_files %}
+<div class='card'>
+        <div class='card-block'>
+            <h4 class='card-title'>{{ medfile.type }}</h4>
+            <p class='card-text'>{{ medfile.name }}</p>
+        </div>
+    </div>
+{% endfor %}
 </div>
 
   {% endblock %}

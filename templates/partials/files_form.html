@@ -1,8 +1,9 @@
-<form>
+<form action='/patients/files' method="POST">
+    <input type='hidden' value='{{ patient._id }}' name='patient_id'/>
     <fieldset>
             <div class="form-group">
                     <label for="type">Type of File</label>
-                    <select class="form-control" id="type" name="type" value="file">
+                    <select class="form-control" id="type" name="type" >
                       <option selected>Choose...</option>
                       <option>MRI</option>
                       <option>CAT</option>
@@ -12,8 +13,11 @@
             </div>
             <div class="form-group">
                     <label for="FileName">File Name</label>
-                    <input type="filename" class="form-control form-control-lg" id="fileName" name="name" placeholder="Enter File Name" value='name' style="font-size: 20px">
+                    <input type="filename" class="form-control form-control-lg" id="fileName" name="name" placeholder="Enter File Name"  style="font-size: 20px">
                 </div>
         
     </fieldset>
+    <div class='form-group'>
+            <button class='btn btn-primary' type='submit'>Save File</button>
+    </div>
 </form>

@@ -39,8 +39,9 @@ def patient_submit():
 @app.route('/patients/<patient_id>')
 def patient_show(patient_id):
     patient = patients.find_one({'_id': ObjectId(patient_id)})
-    
-    return render_template('patient_show.html', patient=patient)
+    patient_files = medfiles.find({'patient_id': ObjectId(patient_id)})
+
+    return render_template('patient_show.html', patient=patient, patient_files=patient_files)
 
 @app.route('/patients/<patient_id>/edit')
 def patient_edit(patient_id):
@@ -66,3 +67,13 @@ def patient_delete(patient_id):
 
     return redirect(url_for('index'))
 
+@app.route('/patients/files', methods=['POST'])
+def files_new():
+    medfile = {
+        'type': request.form.get('type'),
+        'name': request.form.get('content'),
+        'patient_id': ObjectId(request.form.get('patient_id'))
+    }   
+    print(medfile)
+    medfile_id = medfiles.insert_one(medfile).inserted_id
+    return redirect(url_for('patient_show', patient_id=request.form.get('patient_id')))
