@@ -38,6 +38,9 @@
             <p class='card-text'>{{ medfile.name }}</p>
         </div>
     </div>
+    <p><form method='POST' action='/patients/files/{{ medfile._id }}'>
+        <button class='btn btn-link' type='submit'>Delete</button>
+    </form></p>
 {% endfor %}
 </div>
 

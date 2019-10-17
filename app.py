@@ -71,9 +71,15 @@ def patient_delete(patient_id):
 def files_new():
     medfile = {
         'type': request.form.get('type'),
-        'name': request.form.get('content'),
+        'name': request.form.get('name'),
         'patient_id': ObjectId(request.form.get('patient_id'))
     }   
     print(medfile)
     medfile_id = medfiles.insert_one(medfile).inserted_id
     return redirect(url_for('patient_show', patient_id=request.form.get('patient_id')))
+
+@app.route('/patients/files/<medfile_id>', methods=['POST'])
+def files_delete(medfile_id):
+    medfile = medfiles.find_one({'_id': ObjectId(medfile_id)})
+    medfiles.delete_one({'_id': ObjectId(medfile_id)})
+    return redirect(url_for('patient_show', patient_id=medfile.get('patient_id')))
