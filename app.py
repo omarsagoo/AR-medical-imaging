@@ -5,7 +5,7 @@ from bson.objectid import ObjectId
 from flask import Flask, redirect, render_template, request, url_for, send_from_directory, flash
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
-
+from flask_pymongo import PyMongo
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'dcm'])
 UPLOADS_FOLDER = '/Users/omarsagoo/dev/courses/intensive/med-imaging/static/files/uploads'
@@ -19,6 +19,7 @@ patients = db.patients
 app = Flask(__name__)
 app.config["UPLOADS_FOLDER"] = UPLOADS_FOLDER
 app.config["ALLOWED_EXT"] = ALLOWED_EXTENSIONS
+mongo = PyMongo(app)
 
 
 @app.route('/uploads/<filename>')
@@ -97,6 +98,7 @@ def files_new():
     if request.method == 'POST':
         if request.files:
             med_file = request.files['file']
+            mongo.save_file(med_file.filename, med_file)
             if med_file.filename == "":
                 print('image must have file name')
                 return redirect(url_for('patient_show', patient_id=ObjectId(request.form.get('patient_id'))))
@@ -114,9 +116,10 @@ def files_new():
                 'type': request.form.get('type'),
                 'name': request.form.get('name'),
                 'filesize': int(request.cookies['filesize'])/1000,
-                # 'file': med_file,
+                'filename': med_file.filename,
                 'patient_id': ObjectId(request.form.get('patient_id'))
             }   
+            print(medfile)
             medfile_id = medfiles.insert_one(medfile).inserted_id
             return redirect(url_for('patient_show', patient_id=ObjectId(request.form.get('patient_id'))))
 
