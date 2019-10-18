@@ -9,19 +9,17 @@ from flask_pymongo import PyMongo
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'dcm'])
 UPLOADS_FOLDER = '/Users/omarsagoo/dev/courses/intensive/med-imaging/static/files/uploads'
-
-
-client = MongoClient()
-db = client.MedImaging
-medfiles = db.medfiles
-patients = db.patients
+URI = 'mongodb://omarsagoo1:makeschool2019@ds235658.mlab.com:35658/heroku_6zj4sw5v'
 
 app = Flask(__name__)
 app.config["UPLOADS_FOLDER"] = UPLOADS_FOLDER
 app.config["ALLOWED_EXT"] = ALLOWED_EXTENSIONS
-app.config['MONGO_URI'] = 'mongodb://omarsagoo1:makeschool2019@ds235658.mlab.com:35658/heroku_6zj4sw5v'
+app.config['MONGO_URI'] = URI
 mongo = PyMongo(app)
-
+client = MongoClient(URI)
+db = client.MedImaging
+medfiles = db.medfiles
+patients = db.patients
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
