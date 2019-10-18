@@ -2,8 +2,13 @@ import os
 
 from bson.objectid import ObjectId
 
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, send_from_directory, flash
 from pymongo import MongoClient
+from werkzeug.utils import secure_filename
+
+
+# UPLOAD_FOLDER = '/static/files/uploads'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'dcm'])
 
 client = MongoClient()
 db = client.MedImaging
@@ -11,7 +16,14 @@ medfiles = db.medfiles
 patients = db.patients
 
 app = Flask(__name__)
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
 
 @app.route('/')
 def index():
@@ -32,7 +44,7 @@ def patient_submit():
         'sex': request.form.get('sex')
        
     }
-    print(patient)
+    # print(patient)
     patient_id = patients.insert_one(patient).inserted_id
     return redirect(url_for('patient_show', patient_id=patient_id))
 
@@ -67,16 +79,52 @@ def patient_delete(patient_id):
 
     return redirect(url_for('index'))
 
+app.config["UPLOADS_FOLDER"] = '/Users/omarsagoo/dev/courses/intensive/med-imaging/static/files/uploads'
+app.config["ALLOWED_EXT"] = ALLOWED_EXTENSIONS
+
+def allowed_file(filename):
+    if not '.' in filename:
+        return False
+    
+    ext = filename.rsplit(".",1)[1]
+
+    if ext.lower() in app.config["ALLOWED_EXT"]:
+        return True
+    else:
+        return False
+
 @app.route('/patients/files', methods=['POST'])
 def files_new():
-    medfile = {
-        'type': request.form.get('type'),
-        'name': request.form.get('name'),
-        'patient_id': ObjectId(request.form.get('patient_id'))
-    }   
-    print(medfile)
-    medfile_id = medfiles.insert_one(medfile).inserted_id
-    return redirect(url_for('patient_show', patient_id=request.form.get('patient_id')))
+
+    if request.method == 'POST':
+        if request.files:
+            med_file = request.files['file']
+            if med_file.filename == "":
+                print('image must have file name')
+                return redirect(url_for('patient_show', patient_id=ObjectId(request.form.get('patient_id'))))
+
+            if not allowed_file(med_file.filename):
+                print("That file ext is not allowed")
+                return redirect(url_for('patient_show', patient_id=ObjectId(request.form.get('patient_id'))))
+            else:
+                filename = secure_filename(med_file.filename)
+                med_file.save(os.path.join(app.config["UPLOADS_FOLDER"], filename))
+
+            print('image saved')
+
+            medfile = {
+                'type': request.form.get('type'),
+                'name': request.form.get('name'),
+                # 'file': med_file,
+                'patient_id': ObjectId(request.form.get('patient_id'))
+            }   
+            print(medfile)
+            medfile_id = medfiles.insert_one(medfile).inserted_id
+            return redirect(url_for('patient_show', patient_id=ObjectId(request.form.get('patient_id'))))
+
+            # return redirect(request.url)
+
+    
 
 @app.route('/patients/files/<medfile_id>', methods=['POST'])
 def files_delete(medfile_id):

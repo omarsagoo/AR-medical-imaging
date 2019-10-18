@@ -13,19 +13,19 @@
     </div>
 
     <p>
-            <form action='/patients/{{patient._id}}/edit'>
-              <input type='hidden' name='_method' value='EDIT'>
-              <button class='btn btn-primary' type='submit'>EDIT</button>
-            </form>
-          </p>
+        <form action='/patients/{{patient._id}}/edit'>
+            <input type='hidden' name='_method' value='EDIT'>
+            <button class='btn btn-primary' type='submit'>EDIT</button>
+        </form>
+    </p>
 
 
     <p>
-            <form method='POST' action='/patients/{{patient._id}}/delete'>
-              <input type='hidden' name='_method' value='DELETE'>
-              <button class='btn btn-primary' type='submit'>DELETE</button>
-            </form>
-          </p>
+        <form method='POST' action='/patients/{{patient._id}}/delete'>
+            <input type='hidden' name='_method' value='DELETE'>
+            <button class='btn btn-primary' type='submit'>DELETE</button>
+        </form>
+    </p>
 </div>
 
 <hr>  
@@ -33,15 +33,29 @@
 
 {% for medfile in patient_files %}
 <div class='card'>
-        <div class='card-block'>
-            <h4 class='card-title'>{{ medfile.type }}</h4>
-            <p class='card-text'>{{ medfile.name }}</p>
-        </div>
+    <div class='card-block'>
+        <h4 class='card-title'>{{ medfile.type }}</h4>
+        <p class='card-text'>{{ medfile.name }}</p>
+        <img src="{{ medfile.file }}" class="rounded mx-auto d-block" alt="File not rendered">
     </div>
-    <p><form method='POST' action='/patients/files/{{ medfile._id }}'>
+</div>
+
+<p>
+    <form method='POST' action='/patients/files/{{ medfile._id }}'>
         <button class='btn btn-link' type='submit'>Delete</button>
-    </form></p>
+    </form>
+</p>
 {% endfor %}
 </div>
 
   {% endblock %}
+
+  {% block script %}
+<script>
+
+    function filesize(elem){
+        document.cookie = `filesize=${elem.files[0].size}`;
+    }
+
+</script>
+{% endblock %}

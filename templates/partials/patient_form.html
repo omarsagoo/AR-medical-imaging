@@ -2,16 +2,17 @@
 <fieldset>
 
     <div class="form-group">
-            <label for="PatientName">Patient Name</label>
-            <input type="patientname" class="form-control form-control-lg" id="patientName" name="name" placeholder="Enter Patient Name" value='{{ patient.name }}' style="font-size: 20px">
-        </div>
+        <label for="PatientName">Patient Name</label>
+        <input type="patientname" class="form-control form-control-lg" id="patientName" name="name" placeholder="Enter Patient Name" value='{{ patient.name }}' style="font-size: 20px">
+    </div>
 
     <div class="form-group well"> 
-            <div class="form-group">
+        <div class="form-group">
             <label>Date of Birth</label>
             <input type="date" class="form-control" id="DOB" placeholder="Date of Birth" name="dob" value="{{ patient.dob }}">
         </div>
     </div>
+
     <div class="form-group">
             <label for="SEX">Sex</label>
             <select class="form-control" id="SEX" name="sex" value="{{ patient.sex }}">
@@ -21,7 +22,5 @@
             </select>
     </div>
 
-    <div class="well"> 
-    </div>
 </fieldset>
 {% endblock %}
