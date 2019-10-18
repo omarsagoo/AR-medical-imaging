@@ -19,6 +19,7 @@ patients = db.patients
 app = Flask(__name__)
 app.config["UPLOADS_FOLDER"] = UPLOADS_FOLDER
 app.config["ALLOWED_EXT"] = ALLOWED_EXTENSIONS
+app.config['MONGO_URI'] = 'mongodb://omarsagoo1:makeschool2019@ds235658.mlab.com:35658/heroku_6zj4sw5v'
 mongo = PyMongo(app)
 
 
