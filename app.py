@@ -9,15 +9,16 @@ from flask_pymongo import PyMongo
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'dcm'])
 UPLOADS_FOLDER = '/Users/omarsagoo/dev/courses/intensive/med-imaging/static/files/uploads'
-URI = 'mongodb://omarsagoo1:makeschool2019@ds235658.mlab.com:35658/heroku_6zj4sw5v'
+URI = 'mongodb://localhost:27017/MedImaging'
 
 app = Flask(__name__)
 app.config["UPLOADS_FOLDER"] = UPLOADS_FOLDER
 app.config["ALLOWED_EXT"] = ALLOWED_EXTENSIONS
 app.config['MONGO_URI'] = URI
 mongo = PyMongo(app, URI)
-client = MongoClient(URI)
-db = client.MedImaging
+host = os.environ.get('MONGODB_URI', URI)
+client = MongoClient(host=f'{host}?retryWrites=false')
+db = client.get_default_database()
 medfiles = db.medfiles
 patients = db.patients
 
@@ -118,17 +119,16 @@ def files_new():
                 'filename': med_file.filename,
                 'patient_id': ObjectId(request.form.get('patient_id'))
             }   
-            print(medfile)
             medfile_id = medfiles.insert_one(medfile).inserted_id
             return redirect(url_for('patient_show', patient_id=ObjectId(request.form.get('patient_id'))))
 
-            # return redirect(request.url)
 
-# def allowed_file_filesize(filesize):
-#     if int(filesize) <
 
 @app.route('/patients/files/<medfile_id>', methods=['POST'])
 def files_delete(medfile_id):
     medfile = medfiles.find_one({'_id': ObjectId(medfile_id)})
     medfiles.delete_one({'_id': ObjectId(medfile_id)})
     return redirect(url_for('patient_show', patient_id=medfile.get('patient_id')))
+
+if __name__ == '__main__':
+  app.run(debug=True, host='0.0.0.0', port=os.environ.get('PORT', 5000))
