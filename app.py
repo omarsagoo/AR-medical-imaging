@@ -7,8 +7,9 @@ from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 
 
-# UPLOAD_FOLDER = '/static/files/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'dcm'])
+UPLOADS_FOLDER = '/Users/omarsagoo/dev/courses/intensive/med-imaging/static/files/uploads'
+
 
 client = MongoClient()
 db = client.MedImaging
@@ -16,8 +17,8 @@ medfiles = db.medfiles
 patients = db.patients
 
 app = Flask(__name__)
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+app.config["UPLOADS_FOLDER"] = UPLOADS_FOLDER
+app.config["ALLOWED_EXT"] = ALLOWED_EXTENSIONS
 
 
 @app.route('/uploads/<filename>')
@@ -79,9 +80,6 @@ def patient_delete(patient_id):
 
     return redirect(url_for('index'))
 
-app.config["UPLOADS_FOLDER"] = '/Users/omarsagoo/dev/courses/intensive/med-imaging/static/files/uploads'
-app.config["ALLOWED_EXT"] = ALLOWED_EXTENSIONS
-
 def allowed_file(filename):
     if not '.' in filename:
         return False
@@ -115,16 +113,17 @@ def files_new():
             medfile = {
                 'type': request.form.get('type'),
                 'name': request.form.get('name'),
+                'filesize': int(request.cookies['filesize'])/1000,
                 # 'file': med_file,
                 'patient_id': ObjectId(request.form.get('patient_id'))
             }   
-            print(medfile)
             medfile_id = medfiles.insert_one(medfile).inserted_id
             return redirect(url_for('patient_show', patient_id=ObjectId(request.form.get('patient_id'))))
 
             # return redirect(request.url)
 
-    
+# def allowed_file_filesize(filesize):
+#     if int(filesize) <
 
 @app.route('/patients/files/<medfile_id>', methods=['POST'])
 def files_delete(medfile_id):
