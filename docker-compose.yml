@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+    db: 
+      image: "mogno"
+      container_name: "med-mongo-container"
+      environment: 
+        - MONGO_INITDB_DATABASE=medfiles
+        - MONGO_INITIDB_ROOT_USERNAME=omar
+        - MONGO_INITDB_ROOT_PASSWORD=password
+      ports:
+        - '27017-27019:27017-27019'
+    web:
+      build: .
+      command: flask run
+      volumes:
+        - .:/code
+      ports:
+        - "8000:8000"
+      depends_on:
+        - db
